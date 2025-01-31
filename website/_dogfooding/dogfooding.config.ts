@@ -5,10 +5,29 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import path from 'path';
+import RecmaMDXDisplayName from 'recma-mdx-displayname';
 import type {PluginConfig, Plugin} from '@docusaurus/types';
 import type {Options as DocsOptions} from '@docusaurus/plugin-content-docs';
 import type {Options as BlogOptions} from '@docusaurus/plugin-content-blog';
 import type {Options as PageOptions} from '@docusaurus/plugin-content-pages';
+
+export const isArgosBuild = process.env.DOCUSAURUS_ARGOS_BUILD === 'true';
+
+if (isArgosBuild) {
+  console.warn(
+    'Building site for Argos CI - additional dogfooding pages will be preserved in sitemap',
+  );
+}
+
+export function dogfoodingTransformFrontMatter(frontMatter: {
+  [key: string]: unknown;
+}): {[key: string]: unknown} {
+  if (frontMatter.force_unlisted_parseFrontMatter_test === true) {
+    return {...frontMatter, unlisted: true};
+  }
+  return frontMatter;
+}
 
 export const dogfoodingThemeInstances: PluginConfig[] = [
   function swizzleThemeTests(): Plugin {
@@ -28,9 +47,18 @@ export const dogfoodingPluginInstances: PluginConfig[] = [
       sidebarPath: '_dogfooding/docs-tests-sidebars.js',
       versions: {
         current: {
-          noIndex: true,
+          noIndex: !isArgosBuild,
         },
       },
+      onInlineTags: 'warn',
+      tags: 'tags.yml',
+      recmaPlugins: [
+        [
+          RecmaMDXDisplayName,
+          (vfile: {path: string}) =>
+            `MDXContent(${path.relative(process.cwd(), vfile.path)})`,
+        ],
+      ],
 
       // Using a _ prefix to test against an edge case regarding MDX partials: https://github.com/facebook/docusaurus/discussions/5181#discussioncomment-1018079
       path: '_dogfooding/_docs tests',
@@ -63,15 +91,24 @@ export const dogfoodingPluginInstances: PluginConfig[] = [
       editUrl:
         'https://github.com/facebook/docusaurus/edit/main/website/_dogfooding/_blog-tests',
       postsPerPage: 3,
+      blogSidebarCount: 'ALL',
       feedOptions: {
         type: 'all',
         title: 'Docusaurus Tests Blog',
         copyright: `Copyright © ${new Date().getFullYear()} Facebook, Inc.`,
+        xslt: {
+          rss: 'custom-rss.xsl',
+          atom: 'custom-atom.xsl',
+        },
       },
       readingTime: ({content, frontMatter, defaultReadingTime}) =>
         frontMatter.hide_reading_time
           ? undefined
           : defaultReadingTime({content, options: {wordsPerMinute: 5}}),
+      onInlineTags: 'warn',
+      onInlineAuthors: 'ignore',
+      onUntruncatedBlogPosts: 'ignore',
+      tags: 'tags.yml',
     } satisfies BlogOptions,
   ],
 
@@ -81,6 +118,10 @@ export const dogfoodingPluginInstances: PluginConfig[] = [
       id: 'pages-tests',
       path: '_dogfooding/_pages tests',
       routeBasePath: '/tests/pages',
+      showLastUpdateTime: true,
+      showLastUpdateAuthor: true,
+      editUrl: ({pagesPath}) =>
+        `https://github.com/facebook/docusaurus/edit/main/website/_dogfooding/_pages tests/${pagesPath}`,
     } satisfies PageOptions,
   ],
 
@@ -91,6 +132,7 @@ export const dogfoodingPluginInstances: PluginConfig[] = [
         return [
           require.resolve('./clientModuleExample.ts'),
           require.resolve('./clientModuleCSS.css'),
+          require.resolve('./migrateStorageNamespace.ts'),
         ];
       },
     };

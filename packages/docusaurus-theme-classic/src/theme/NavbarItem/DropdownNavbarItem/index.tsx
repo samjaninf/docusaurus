@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import React, {useState, useRef, useEffect} from 'react';
+import React, {useState, useRef, useEffect, type ReactNode} from 'react';
 import clsx from 'clsx';
 import {
   isRegexpStringMatch,
@@ -89,6 +89,9 @@ function DropdownNavbarItemDesktop({
         aria-haspopup="true"
         aria-expanded={showDropdown}
         role="button"
+        // # hash permits to make the <a> tag focusable in case no link target
+        // See https://github.com/facebook/docusaurus/pull/6003
+        // There's probably a better solution though...
         href={props.to ? undefined : '#'}
         className={clsx('navbar__link', className)}
         {...props}
@@ -174,7 +177,7 @@ function DropdownNavbarItemMobile({
 export default function DropdownNavbarItem({
   mobile = false,
   ...props
-}: Props): JSX.Element {
+}: Props): ReactNode {
   const Comp = mobile ? DropdownNavbarItemMobile : DropdownNavbarItemDesktop;
   return <Comp {...props} />;
 }

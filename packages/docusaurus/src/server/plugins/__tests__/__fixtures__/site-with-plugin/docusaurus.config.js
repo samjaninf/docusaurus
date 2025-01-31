@@ -21,6 +21,10 @@ module.exports = {
       },
       {it: 'should work'},
     ],
+    function (context, options) {
+      // it's ok for a plugin to self-disable
+      return null;
+    },
     './plugin3.js',
     ['./plugin4.js', {}],
     './pluginEsm',

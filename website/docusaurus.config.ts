@@ -5,7 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 import path from 'path';
-
 import npm2yarn from '@docusaurus/remark-plugin-npm2yarn';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
@@ -17,6 +16,8 @@ import {
   dogfoodingPluginInstances,
   dogfoodingThemeInstances,
   dogfoodingRedirects,
+  dogfoodingTransformFrontMatter,
+  isArgosBuild,
 } from './_dogfooding/dogfooding.config';
 
 import ConfigLocalized from './docusaurus.config.localized.json';
@@ -24,7 +25,8 @@ import ConfigLocalized from './docusaurus.config.localized.json';
 import PrismLight from './src/utils/prismLight';
 import PrismDark from './src/utils/prismDark';
 
-import type {Config} from '@docusaurus/types';
+import type {Config, DocusaurusConfig} from '@docusaurus/types';
+
 import type * as Preset from '@docusaurus/preset-classic';
 import type {Options as DocsOptions} from '@docusaurus/plugin-content-docs';
 import type {Options as BlogOptions} from '@docusaurus/plugin-content-blog';
@@ -39,15 +41,37 @@ const ArchivedVersionsDropdownItems = Object.entries(VersionsArchived).splice(
 
 function isPrerelease(version: string) {
   return (
+    version.includes('-') ||
     version.includes('alpha') ||
     version.includes('beta') ||
     version.includes('rc')
   );
 }
 
-function getLastVersion() {
-  const firstStableVersion = versions.find((version) => !isPrerelease(version));
-  return firstStableVersion ?? versions[0];
+function getLastStableVersion() {
+  const lastStableVersion = versions.find((version) => !isPrerelease(version));
+  if (!lastStableVersion) {
+    throw new Error('unexpected, no stable Docusaurus version?');
+  }
+  return lastStableVersion;
+}
+const announcedVersion = getAnnouncedVersion();
+
+function getLastStableVersionTuple(): [string, string, string] {
+  const lastStableVersion = getLastStableVersion();
+  const parts = lastStableVersion.split('.');
+  if (parts.length !== 3) {
+    throw new Error(`Unexpected stable version name: ${lastStableVersion}`);
+  }
+  return [parts[0]!, parts[1]!, parts[2]!];
+}
+
+// The version announced on the homepage hero and announcement banner
+// 3.3.2 => 3.3
+// 3.0.5 => 3.0
+function getAnnouncedVersion() {
+  const [major, minor] = getLastStableVersionTuple();
+  return `${major}.${minor}`;
 }
 
 // This probably only makes sense for the alpha/beta/rc phase, temporary
@@ -73,6 +97,17 @@ function getNextVersionName() {
 // Test with: DOCUSAURUS_CRASH_TEST=true yarn build:website:fast
 const crashTest = process.env.DOCUSAURUS_CRASH_TEST === 'true';
 
+// By default, we use Docusaurus Faster
+// DOCUSAURUS_SLOWER=true is useful for benchmarking faster against slower
+// hyperfine --prepare 'yarn clear:website' --runs 3 'DOCUSAURUS_SLOWER=true yarn build:website:fast' 'yarn build:website:fast'
+const isSlower = process.env.DOCUSAURUS_SLOWER === 'true';
+if (isSlower) {
+  console.log('🐢 Using slower Docusaurus build');
+}
+
+const router = process.env
+  .DOCUSAURUS_ROUTER as DocusaurusConfig['future']['experimental_router'];
+
 const isDev = process.env.NODE_ENV === 'development';
 
 const isDeployPreview =
@@ -94,6 +129,8 @@ const isI18nStaging = process.env.I18N_STAGING === 'true';
 
 const isVersioningDisabled = !!process.env.DISABLE_VERSIONING || isI18nStaging;
 
+const isRsdoctor = process.env.RSDOCTOR === 'true';
+
 /*
 const TwitterSvg =
   '<svg style="fill: #1DA1F2; vertical-align: middle; margin-left: 3px;" width="16" height="16" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M459.37 151.716c.325 4.548.325 9.097.325 13.645 0 138.72-105.583 298.558-298.558 298.558-59.452 0-114.68-17.219-161.137-47.106 8.447.974 16.568 1.299 25.34 1.299 49.055 0 94.213-16.568 130.274-44.832-46.132-.975-84.792-31.188-98.112-72.772 6.498.974 12.995 1.624 19.818 1.624 9.421 0 18.843-1.3 27.614-3.573-48.081-9.747-84.143-51.98-84.143-102.985v-1.299c13.969 7.797 30.214 12.67 47.431 13.319-28.264-18.843-46.781-51.005-46.781-87.391 0-19.492 5.197-37.36 14.294-52.954 51.655 63.675 129.3 105.258 216.365 109.807-1.624-7.797-2.599-15.918-2.599-24.04 0-57.828 46.782-104.934 104.934-104.934 30.213 0 57.502 12.67 76.67 33.137 23.715-4.548 46.456-13.32 66.599-25.34-7.798 24.366-24.366 44.833-46.132 57.827 21.117-2.273 41.584-8.122 60.426-16.243-14.292 20.791-32.161 39.308-52.628 54.253z"></path></svg>';
@@ -101,7 +138,7 @@ const TwitterSvg =
 
 const defaultLocale = 'en';
 
-function getLocalizedConfigValue(key: string) {
+function getLocalizedConfigValue(key: keyof typeof ConfigLocalized) {
   const currentLocale = process.env.DOCUSAURUS_CURRENT_LOCALE ?? defaultLocale;
   const values = ConfigLocalized[key];
   if (!values) {
@@ -125,6 +162,14 @@ export default async function createConfigAsync() {
     baseUrl,
     baseUrlIssueBanner: true,
     url: 'https://docusaurus.io',
+    future: {
+      v4: !isSlower, // Not accurate, but good enough
+      experimental_faster: !isSlower,
+      experimental_storage: {
+        namespace: true,
+      },
+      experimental_router: router,
+    },
     // Dogfood both settings:
     // - force trailing slashes for deploy previews
     // - avoid trailing slashes in prod
@@ -148,54 +193,53 @@ export default async function createConfigAsync() {
           : // Production locales
             [defaultLocale, 'fr', 'pt-BR', 'ko', 'zh-CN'],
     },
-    webpack: {
-      jsLoader: (isServer) => ({
-        loader: require.resolve('swc-loader'),
-        options: {
-          jsc: {
-            parser: {
-              syntax: 'typescript',
-              tsx: true,
-            },
-            transform: {
-              react: {
-                runtime: 'automatic',
-              },
-            },
-            target: 'es2017',
-          },
-          module: {
-            type: isServer ? 'commonjs' : 'es6',
-          },
-        },
-      }),
-    },
     markdown: {
       format: 'detect',
       mermaid: true,
       mdx1Compat: {
         // comments: false,
       },
+      remarkRehypeOptions: {
+        footnoteLabel: getLocalizedConfigValue('remarkRehypeOptions_footnotes'),
+      },
+      parseFrontMatter: async (params) => {
+        const result = await params.defaultParseFrontMatter(params);
+        return {
+          ...result,
+          frontMatter: dogfoodingTransformFrontMatter(result.frontMatter),
+        };
+      },
       preprocessor: ({filePath, fileContent}) => {
         let result = fileContent;
 
+        // This fixes Crowdin bug altering MDX comments on i18n sites...
+        // https://github.com/facebook/docusaurus/pull/9220
         result = result.replaceAll('{/_', '{/*');
         result = result.replaceAll('_/}', '*/}');
 
-        if (isDev) {
-          // "vscode://file/${projectPath}${filePath}:${line}:${column}",
-          // "webstorm://open?file=${projectPath}${filePath}&line=${line}&column=${column}",
-          const vscodeLink = `vscode://file/${filePath}`;
-          const webstormLink = `webstorm://open?file=${filePath}`;
-          const intellijLink = `idea://open?file=${filePath}`;
-          result = `${result}\n\n---\n\n**DEV**: open this file in [VSCode](<${vscodeLink}>) | [WebStorm](<${webstormLink}>) | [IntelliJ](<${intellijLink}>)\n`;
+        const showDevLink = false;
+
+        if (isDev && showDevLink) {
+          const isPartial = path.basename(filePath).startsWith('_');
+          if (!isPartial) {
+            // "vscode://file/${projectPath}${filePath}:${line}:${column}",
+            // "webstorm://open?file=${projectPath}${filePath}&line=${line}&column=${column}",
+            const vscodeLink = `vscode://file/${filePath}`;
+            const webstormLink = `webstorm://open?file=${filePath}`;
+            const intellijLink = `idea://open?file=${filePath}`;
+            result = `${result}\n\n---\n\n**DEV**: open this file in [VSCode](<${vscodeLink}>) | [WebStorm](<${webstormLink}>) | [IntelliJ](<${intellijLink}>)\n`;
+          }
         }
 
         return result;
       },
     },
     onBrokenLinks:
-      isBuildFast ||
+      isVersioningDisabled ||
+      process.env.DOCUSAURUS_CURRENT_LOCALE !== defaultLocale
+        ? 'warn'
+        : 'throw',
+    onBrokenAnchors:
       isVersioningDisabled ||
       process.env.DOCUSAURUS_CURRENT_LOCALE !== defaultLocale
         ? 'warn'
@@ -207,6 +251,7 @@ export default async function createConfigAsync() {
       isDeployPreview,
       description:
         'An optimized site generator in React. Docusaurus helps you to move fast and write content. Build documentation websites, blogs, marketing pages, and more.',
+      announcedVersion,
     },
     staticDirectories: [
       'static',
@@ -217,6 +262,25 @@ export default async function createConfigAsync() {
     ],
     themes: ['live-codeblock', ...dogfoodingThemeInstances],
     plugins: [
+      isRsdoctor && [
+        'rsdoctor',
+        {
+          rsdoctorOptions: {
+            disableTOSUpload: true,
+            supports: {
+              // https://rsdoctor.dev/config/options/options#generatetilegraph
+              generateTileGraph: true,
+            },
+            linter: {
+              // See https://rsdoctor.dev/guide/usage/rule-config
+              rules: {
+                'ecma-version-check': 'off',
+                'duplicate-package': 'off',
+              },
+            },
+          },
+        },
+      ],
       [
         './src/plugins/changelog/index.js',
         {
@@ -238,6 +302,7 @@ export default async function createConfigAsync() {
             copyright: `Copyright © ${new Date().getFullYear()} Facebook, Inc.`,
             language: defaultLocale,
           },
+          onInlineAuthors: 'warn',
         },
       ],
       [
@@ -283,13 +348,16 @@ export default async function createConfigAsync() {
               from: ['/docs/resources', '/docs/next/resources'],
               to: '/community/resources',
             },
+            {
+              from: '/docs/api/misc/docusaurus-init',
+              to: '/docs/api/misc/create-docusaurus',
+            },
             ...dogfoodingRedirects,
           ],
         } satisfies ClientRedirectsOptions,
       ],
       [
         'ideal-image',
-
         {
           quality: 70,
           max: 1030,
@@ -399,7 +467,7 @@ export default async function createConfigAsync() {
               isBranchDeploy ||
               isBuildFast
                 ? 'current'
-                : getLastVersion(),
+                : getLastStableVersion(),
 
             onlyIncludeVersions: (() => {
               if (isBuildFast) {
@@ -421,6 +489,8 @@ export default async function createConfigAsync() {
           blog: {
             // routeBasePath: '/',
             path: 'blog',
+            showLastUpdateAuthor: true,
+            showLastUpdateTime: true,
             editUrl: ({locale, blogDirPath, blogPath}) => {
               if (locale !== defaultLocale) {
                 return `https://crowdin.com/project/docusaurus-v2/${locale}`;
@@ -431,13 +501,34 @@ export default async function createConfigAsync() {
             postsPerPage: 5,
             feedOptions: {
               type: 'all',
+              description:
+                'Keep up to date with upcoming Docusaurus releases and articles by following our feed!',
               copyright: `Copyright © ${new Date().getFullYear()} Facebook, Inc.`,
+              xslt: true,
             },
+            blogTitle: 'Docusaurus blog',
+            blogDescription: 'Read blog posts about Docusaurus from the team',
             blogSidebarCount: 'ALL',
             blogSidebarTitle: 'All our posts',
+            onUntruncatedBlogPosts:
+              process.env.DOCUSAURUS_CURRENT_LOCALE !== defaultLocale
+                ? 'warn'
+                : 'throw',
+            onInlineTags:
+              process.env.DOCUSAURUS_CURRENT_LOCALE !== defaultLocale
+                ? 'warn'
+                : 'throw',
           } satisfies BlogOptions,
           pages: {
             remarkPlugins: [npm2yarn],
+            editUrl: ({locale, pagesPath}) => {
+              if (locale !== defaultLocale) {
+                return `https://crowdin.com/project/docusaurus-v2/${locale}`;
+              }
+              return `https://github.com/facebook/docusaurus/edit/main/website/src/pages/${pagesPath}`;
+            },
+            showLastUpdateAuthor: true,
+            showLastUpdateTime: true,
           } satisfies PageOptions,
           theme: {
             customCss: [
@@ -452,8 +543,18 @@ export default async function createConfigAsync() {
               }
             : undefined,
           sitemap: {
-            // Note: /tests/docs already has noIndex: true
-            ignorePatterns: ['/tests/{blog,pages}/**'],
+            ignorePatterns: isArgosBuild
+              ? undefined
+              : // Note: /tests/docs already has noIndex: true
+                ['/tests/{blog,pages}/**'],
+            lastmod: 'date',
+            priority: null,
+            changefreq: null,
+          },
+          svgr: {
+            svgrConfig: {
+              svgoConfig: undefined, // Use .svgo.config.js
+            },
           },
         } satisfies Preset.Options,
       ],
@@ -475,9 +576,9 @@ export default async function createConfigAsync() {
         respectPrefersColorScheme: true,
       },
       announcementBar: {
-        id: 'announcementBar-3', // Increment on change
-        // content: `⭐️ If you like Docusaurus, give it a star on <a target="_blank" rel="noopener noreferrer" href="https://github.com/facebook/docusaurus">GitHub</a> and follow us on <a target="_blank" rel="noopener noreferrer" href="https://twitter.com/docusaurus">Twitter ${TwitterSvg}</a>`,
-        content: `🎉️ <b><a target="_blank" href="https://docusaurus.io/blog/releases/3.0">Docusaurus v3.0</a> is now out!</b> 🥳️`,
+        id: `announcementBar-v${announcedVersion}`,
+        // content: `⭐️ If you like Docusaurus, give it a star on <a target="_blank" rel="noopener noreferrer" href="https://github.com/facebook/docusaurus">GitHub</a> and follow us on <a target="_blank" rel="noopener noreferrer" href="https://x.com/docusaurus">X ${TwitterSvg}</a>`,
+        content: `🎉️ <b><a target="_blank" href="https://docusaurus.io/blog/releases/${announcedVersion}">Docusaurus v${announcedVersion}</a> is out!</b> 🥳️`,
       },
       prism: {
         additionalLanguages: [
@@ -486,6 +587,7 @@ export default async function createConfigAsync() {
           'haskell',
           'matlab',
           'PHp',
+          'powershell',
           'bash',
           'diff',
           'json',
@@ -681,8 +783,8 @@ export default async function createConfigAsync() {
                 href: 'https://github.com/facebook/docusaurus',
               },
               {
-                label: 'Twitter',
-                href: 'https://twitter.com/docusaurus',
+                label: 'X',
+                href: 'https://x.com/docusaurus',
               },
               {
                 html: `
@@ -691,15 +793,23 @@ export default async function createConfigAsync() {
                 </a>
               `,
               },
+              {
+                html: `
+                <a href="https://argos-ci.com" target="_blank" rel="noreferrer noopener" aria-label="Covered by Argos">
+                  <img src="https://argos-ci.com/badge.svg" alt="Covered by Argos" width="133" height="20" />
+                </a>
+              `,
+              },
             ],
           },
           {
             title: 'Legal',
-            // Please don't remove the privacy and terms, it's a legal
-            // requirement.
+            className: 'footer-column-legal',
+            // Don't remove the privacy and terms, it's a legal requirement.
             items: [
               {
                 label: 'Privacy',
+                className: 'footer-item-privacy',
                 href: 'https://opensource.facebook.com/legal/privacy/',
               },
               {
