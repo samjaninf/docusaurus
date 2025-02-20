@@ -24,7 +24,7 @@ If you use a standalone plugin, you may need to achieve the same effect by check
 export default {
   plugins: [
     // highlight-next-line
-    process.env.NODE_ENV === 'production' && '@docusaurus/plugin-debug',
+    process.env.NODE_ENV !== 'production' && '@docusaurus/plugin-debug',
   ].filter(Boolean),
 };
 ```
@@ -49,7 +49,7 @@ npm install --save @docusaurus/plugin-debug
 
 If you use the preset `@docusaurus/preset-classic`, you don't need to install this plugin as a dependency.
 
-You can configure this plugin through the preset options.
+You can configure this plugin through the [preset options](../../using-plugins.mdx#docusauruspreset-classic).
 
 :::
 

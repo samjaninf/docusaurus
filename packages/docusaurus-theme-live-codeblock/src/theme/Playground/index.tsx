@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import React from 'react';
+import React, {type ReactNode} from 'react';
 import clsx from 'clsx';
 import useIsBrowser from '@docusaurus/useIsBrowser';
 import {LiveProvider, LiveEditor, LiveError, LivePreview} from 'react-live';
@@ -23,7 +23,7 @@ import type {ThemeConfig} from '@docusaurus/theme-live-codeblock';
 
 import styles from './styles.module.css';
 
-function Header({children}: {children: React.ReactNode}) {
+function Header({children}: {children: ReactNode}) {
   return <div className={clsx(styles.playgroundHeader)}>{children}</div>;
 }
 
@@ -98,11 +98,15 @@ function EditorWithHeader() {
   );
 }
 
+// this should rather be a stable function
+// see https://github.com/facebook/docusaurus/issues/9630#issuecomment-1855682643
+const DEFAULT_TRANSFORM_CODE = (code: string) => `${code};`;
+
 export default function Playground({
   children,
   transformCode,
   ...props
-}: Props): JSX.Element {
+}: Props): ReactNode {
   const {
     siteConfig: {themeConfig},
   } = useDocusaurusContext();
@@ -116,9 +120,9 @@ export default function Playground({
   return (
     <div className={styles.playgroundContainer}>
       <LiveProvider
-        code={children.replace(/\n$/, '')}
+        code={children?.replace(/\n$/, '')}
         noInline={noInline}
-        transformCode={transformCode ?? ((code) => `${code};`)}
+        transformCode={transformCode ?? DEFAULT_TRANSFORM_CODE}
         theme={prismTheme}
         {...props}>
         {playgroundPosition === 'top' ? (
