@@ -21,10 +21,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
           ref: ${{ github.head_ref }}
 
       - name: Installation
-        run: yarn
+        run: yarn || yarn || yarn
 
       - name: AutoFix Format
         run: yarn format
@@ -37,6 +38,9 @@ jobs:
 
       - name: AutoFix Spelling
         run: yarn lint:spelling:fix
+
+      - name: Print Diff
+        run: git diff
 
       - uses: stefanzweifel/git-auto-commit-action@v5
         with:

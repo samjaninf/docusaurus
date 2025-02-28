@@ -7,6 +7,26 @@ exports[`loadSiteConfig website with .cjs siteConfig 1`] = `
     "baseUrlIssueBanner": true,
     "clientModules": [],
     "customFields": {},
+    "future": {
+      "experimental_faster": {
+        "lightningCssMinimizer": false,
+        "mdxCrossCompilerCache": false,
+        "rspackBundler": false,
+        "rspackPersistentCache": false,
+        "ssgWorkerThreads": false,
+        "swcHtmlMinimizer": false,
+        "swcJsLoader": false,
+        "swcJsMinimizer": false,
+      },
+      "experimental_router": "browser",
+      "experimental_storage": {
+        "namespace": false,
+        "type": "localStorage",
+      },
+      "v4": {
+        "removeLegacyPostBuildHeadAttribute": false,
+      },
+    },
     "headTags": [],
     "i18n": {
       "defaultLocale": "en",
@@ -17,6 +37,9 @@ exports[`loadSiteConfig website with .cjs siteConfig 1`] = `
       "path": "i18n",
     },
     "markdown": {
+      "anchors": {
+        "maintainCase": false,
+      },
       "format": "mdx",
       "mdx1Compat": {
         "admonitions": true,
@@ -24,9 +47,12 @@ exports[`loadSiteConfig website with .cjs siteConfig 1`] = `
         "headingIds": true,
       },
       "mermaid": false,
+      "parseFrontMatter": [Function],
       "preprocessor": undefined,
+      "remarkRehypeOptions": undefined,
     },
     "noIndex": false,
+    "onBrokenAnchors": "warn",
     "onBrokenLinks": "throw",
     "onBrokenMarkdownLinks": "warn",
     "onDuplicateRoutes": "warn",
@@ -55,6 +81,26 @@ exports[`loadSiteConfig website with ts + js config 1`] = `
     "baseUrlIssueBanner": true,
     "clientModules": [],
     "customFields": {},
+    "future": {
+      "experimental_faster": {
+        "lightningCssMinimizer": false,
+        "mdxCrossCompilerCache": false,
+        "rspackBundler": false,
+        "rspackPersistentCache": false,
+        "ssgWorkerThreads": false,
+        "swcHtmlMinimizer": false,
+        "swcJsLoader": false,
+        "swcJsMinimizer": false,
+      },
+      "experimental_router": "browser",
+      "experimental_storage": {
+        "namespace": false,
+        "type": "localStorage",
+      },
+      "v4": {
+        "removeLegacyPostBuildHeadAttribute": false,
+      },
+    },
     "headTags": [],
     "i18n": {
       "defaultLocale": "en",
@@ -65,6 +111,9 @@ exports[`loadSiteConfig website with ts + js config 1`] = `
       "path": "i18n",
     },
     "markdown": {
+      "anchors": {
+        "maintainCase": false,
+      },
       "format": "mdx",
       "mdx1Compat": {
         "admonitions": true,
@@ -72,9 +121,12 @@ exports[`loadSiteConfig website with ts + js config 1`] = `
         "headingIds": true,
       },
       "mermaid": false,
+      "parseFrontMatter": [Function],
       "preprocessor": undefined,
+      "remarkRehypeOptions": undefined,
     },
     "noIndex": false,
+    "onBrokenAnchors": "warn",
     "onBrokenLinks": "throw",
     "onBrokenMarkdownLinks": "warn",
     "onDuplicateRoutes": "warn",
@@ -103,6 +155,26 @@ exports[`loadSiteConfig website with valid JS CJS config 1`] = `
     "baseUrlIssueBanner": true,
     "clientModules": [],
     "customFields": {},
+    "future": {
+      "experimental_faster": {
+        "lightningCssMinimizer": false,
+        "mdxCrossCompilerCache": false,
+        "rspackBundler": false,
+        "rspackPersistentCache": false,
+        "ssgWorkerThreads": false,
+        "swcHtmlMinimizer": false,
+        "swcJsLoader": false,
+        "swcJsMinimizer": false,
+      },
+      "experimental_router": "browser",
+      "experimental_storage": {
+        "namespace": false,
+        "type": "localStorage",
+      },
+      "v4": {
+        "removeLegacyPostBuildHeadAttribute": false,
+      },
+    },
     "headTags": [],
     "i18n": {
       "defaultLocale": "en",
@@ -113,6 +185,9 @@ exports[`loadSiteConfig website with valid JS CJS config 1`] = `
       "path": "i18n",
     },
     "markdown": {
+      "anchors": {
+        "maintainCase": false,
+      },
       "format": "mdx",
       "mdx1Compat": {
         "admonitions": true,
@@ -120,9 +195,12 @@ exports[`loadSiteConfig website with valid JS CJS config 1`] = `
         "headingIds": true,
       },
       "mermaid": false,
+      "parseFrontMatter": [Function],
       "preprocessor": undefined,
+      "remarkRehypeOptions": undefined,
     },
     "noIndex": false,
+    "onBrokenAnchors": "warn",
     "onBrokenLinks": "throw",
     "onBrokenMarkdownLinks": "warn",
     "onDuplicateRoutes": "warn",
@@ -151,6 +229,26 @@ exports[`loadSiteConfig website with valid JS ESM config 1`] = `
     "baseUrlIssueBanner": true,
     "clientModules": [],
     "customFields": {},
+    "future": {
+      "experimental_faster": {
+        "lightningCssMinimizer": false,
+        "mdxCrossCompilerCache": false,
+        "rspackBundler": false,
+        "rspackPersistentCache": false,
+        "ssgWorkerThreads": false,
+        "swcHtmlMinimizer": false,
+        "swcJsLoader": false,
+        "swcJsMinimizer": false,
+      },
+      "experimental_router": "browser",
+      "experimental_storage": {
+        "namespace": false,
+        "type": "localStorage",
+      },
+      "v4": {
+        "removeLegacyPostBuildHeadAttribute": false,
+      },
+    },
     "headTags": [],
     "i18n": {
       "defaultLocale": "en",
@@ -161,6 +259,9 @@ exports[`loadSiteConfig website with valid JS ESM config 1`] = `
       "path": "i18n",
     },
     "markdown": {
+      "anchors": {
+        "maintainCase": false,
+      },
       "format": "mdx",
       "mdx1Compat": {
         "admonitions": true,
@@ -168,9 +269,12 @@ exports[`loadSiteConfig website with valid JS ESM config 1`] = `
         "headingIds": true,
       },
       "mermaid": false,
+      "parseFrontMatter": [Function],
       "preprocessor": undefined,
+      "remarkRehypeOptions": undefined,
     },
     "noIndex": false,
+    "onBrokenAnchors": "warn",
     "onBrokenLinks": "throw",
     "onBrokenMarkdownLinks": "warn",
     "onDuplicateRoutes": "warn",
@@ -199,6 +303,26 @@ exports[`loadSiteConfig website with valid TypeScript CJS config 1`] = `
     "baseUrlIssueBanner": true,
     "clientModules": [],
     "customFields": {},
+    "future": {
+      "experimental_faster": {
+        "lightningCssMinimizer": false,
+        "mdxCrossCompilerCache": false,
+        "rspackBundler": false,
+        "rspackPersistentCache": false,
+        "ssgWorkerThreads": false,
+        "swcHtmlMinimizer": false,
+        "swcJsLoader": false,
+        "swcJsMinimizer": false,
+      },
+      "experimental_router": "browser",
+      "experimental_storage": {
+        "namespace": false,
+        "type": "localStorage",
+      },
+      "v4": {
+        "removeLegacyPostBuildHeadAttribute": false,
+      },
+    },
     "headTags": [],
     "i18n": {
       "defaultLocale": "en",
@@ -209,6 +333,9 @@ exports[`loadSiteConfig website with valid TypeScript CJS config 1`] = `
       "path": "i18n",
     },
     "markdown": {
+      "anchors": {
+        "maintainCase": false,
+      },
       "format": "mdx",
       "mdx1Compat": {
         "admonitions": true,
@@ -216,9 +343,12 @@ exports[`loadSiteConfig website with valid TypeScript CJS config 1`] = `
         "headingIds": true,
       },
       "mermaid": false,
+      "parseFrontMatter": [Function],
       "preprocessor": undefined,
+      "remarkRehypeOptions": undefined,
     },
     "noIndex": false,
+    "onBrokenAnchors": "warn",
     "onBrokenLinks": "throw",
     "onBrokenMarkdownLinks": "warn",
     "onDuplicateRoutes": "warn",
@@ -247,6 +377,26 @@ exports[`loadSiteConfig website with valid TypeScript ESM config 1`] = `
     "baseUrlIssueBanner": true,
     "clientModules": [],
     "customFields": {},
+    "future": {
+      "experimental_faster": {
+        "lightningCssMinimizer": false,
+        "mdxCrossCompilerCache": false,
+        "rspackBundler": false,
+        "rspackPersistentCache": false,
+        "ssgWorkerThreads": false,
+        "swcHtmlMinimizer": false,
+        "swcJsLoader": false,
+        "swcJsMinimizer": false,
+      },
+      "experimental_router": "browser",
+      "experimental_storage": {
+        "namespace": false,
+        "type": "localStorage",
+      },
+      "v4": {
+        "removeLegacyPostBuildHeadAttribute": false,
+      },
+    },
     "headTags": [],
     "i18n": {
       "defaultLocale": "en",
@@ -257,6 +407,9 @@ exports[`loadSiteConfig website with valid TypeScript ESM config 1`] = `
       "path": "i18n",
     },
     "markdown": {
+      "anchors": {
+        "maintainCase": false,
+      },
       "format": "mdx",
       "mdx1Compat": {
         "admonitions": true,
@@ -264,9 +417,12 @@ exports[`loadSiteConfig website with valid TypeScript ESM config 1`] = `
         "headingIds": true,
       },
       "mermaid": false,
+      "parseFrontMatter": [Function],
       "preprocessor": undefined,
+      "remarkRehypeOptions": undefined,
     },
     "noIndex": false,
+    "onBrokenAnchors": "warn",
     "onBrokenLinks": "throw",
     "onBrokenMarkdownLinks": "warn",
     "onDuplicateRoutes": "warn",
@@ -295,6 +451,26 @@ exports[`loadSiteConfig website with valid async config 1`] = `
     "baseUrlIssueBanner": true,
     "clientModules": [],
     "customFields": {},
+    "future": {
+      "experimental_faster": {
+        "lightningCssMinimizer": false,
+        "mdxCrossCompilerCache": false,
+        "rspackBundler": false,
+        "rspackPersistentCache": false,
+        "ssgWorkerThreads": false,
+        "swcHtmlMinimizer": false,
+        "swcJsLoader": false,
+        "swcJsMinimizer": false,
+      },
+      "experimental_router": "browser",
+      "experimental_storage": {
+        "namespace": false,
+        "type": "localStorage",
+      },
+      "v4": {
+        "removeLegacyPostBuildHeadAttribute": false,
+      },
+    },
     "headTags": [],
     "i18n": {
       "defaultLocale": "en",
@@ -305,6 +481,9 @@ exports[`loadSiteConfig website with valid async config 1`] = `
       "path": "i18n",
     },
     "markdown": {
+      "anchors": {
+        "maintainCase": false,
+      },
       "format": "mdx",
       "mdx1Compat": {
         "admonitions": true,
@@ -312,9 +491,12 @@ exports[`loadSiteConfig website with valid async config 1`] = `
         "headingIds": true,
       },
       "mermaid": false,
+      "parseFrontMatter": [Function],
       "preprocessor": undefined,
+      "remarkRehypeOptions": undefined,
     },
     "noIndex": false,
+    "onBrokenAnchors": "warn",
     "onBrokenLinks": "throw",
     "onBrokenMarkdownLinks": "warn",
     "onDuplicateRoutes": "warn",
@@ -345,6 +527,26 @@ exports[`loadSiteConfig website with valid async config creator function 1`] = `
     "baseUrlIssueBanner": true,
     "clientModules": [],
     "customFields": {},
+    "future": {
+      "experimental_faster": {
+        "lightningCssMinimizer": false,
+        "mdxCrossCompilerCache": false,
+        "rspackBundler": false,
+        "rspackPersistentCache": false,
+        "ssgWorkerThreads": false,
+        "swcHtmlMinimizer": false,
+        "swcJsLoader": false,
+        "swcJsMinimizer": false,
+      },
+      "experimental_router": "browser",
+      "experimental_storage": {
+        "namespace": false,
+        "type": "localStorage",
+      },
+      "v4": {
+        "removeLegacyPostBuildHeadAttribute": false,
+      },
+    },
     "headTags": [],
     "i18n": {
       "defaultLocale": "en",
@@ -355,6 +557,9 @@ exports[`loadSiteConfig website with valid async config creator function 1`] = `
       "path": "i18n",
     },
     "markdown": {
+      "anchors": {
+        "maintainCase": false,
+      },
       "format": "mdx",
       "mdx1Compat": {
         "admonitions": true,
@@ -362,9 +567,12 @@ exports[`loadSiteConfig website with valid async config creator function 1`] = `
         "headingIds": true,
       },
       "mermaid": false,
+      "parseFrontMatter": [Function],
       "preprocessor": undefined,
+      "remarkRehypeOptions": undefined,
     },
     "noIndex": false,
+    "onBrokenAnchors": "warn",
     "onBrokenLinks": "throw",
     "onBrokenMarkdownLinks": "warn",
     "onDuplicateRoutes": "warn",
@@ -395,6 +603,26 @@ exports[`loadSiteConfig website with valid config creator function 1`] = `
     "baseUrlIssueBanner": true,
     "clientModules": [],
     "customFields": {},
+    "future": {
+      "experimental_faster": {
+        "lightningCssMinimizer": false,
+        "mdxCrossCompilerCache": false,
+        "rspackBundler": false,
+        "rspackPersistentCache": false,
+        "ssgWorkerThreads": false,
+        "swcHtmlMinimizer": false,
+        "swcJsLoader": false,
+        "swcJsMinimizer": false,
+      },
+      "experimental_router": "browser",
+      "experimental_storage": {
+        "namespace": false,
+        "type": "localStorage",
+      },
+      "v4": {
+        "removeLegacyPostBuildHeadAttribute": false,
+      },
+    },
     "headTags": [],
     "i18n": {
       "defaultLocale": "en",
@@ -405,6 +633,9 @@ exports[`loadSiteConfig website with valid config creator function 1`] = `
       "path": "i18n",
     },
     "markdown": {
+      "anchors": {
+        "maintainCase": false,
+      },
       "format": "mdx",
       "mdx1Compat": {
         "admonitions": true,
@@ -412,9 +643,12 @@ exports[`loadSiteConfig website with valid config creator function 1`] = `
         "headingIds": true,
       },
       "mermaid": false,
+      "parseFrontMatter": [Function],
       "preprocessor": undefined,
+      "remarkRehypeOptions": undefined,
     },
     "noIndex": false,
+    "onBrokenAnchors": "warn",
     "onBrokenLinks": "throw",
     "onBrokenMarkdownLinks": "warn",
     "onDuplicateRoutes": "warn",
@@ -448,6 +682,26 @@ exports[`loadSiteConfig website with valid siteConfig 1`] = `
     ],
     "customFields": {},
     "favicon": "img/docusaurus.ico",
+    "future": {
+      "experimental_faster": {
+        "lightningCssMinimizer": false,
+        "mdxCrossCompilerCache": false,
+        "rspackBundler": false,
+        "rspackPersistentCache": false,
+        "ssgWorkerThreads": false,
+        "swcHtmlMinimizer": false,
+        "swcJsLoader": false,
+        "swcJsMinimizer": false,
+      },
+      "experimental_router": "browser",
+      "experimental_storage": {
+        "namespace": false,
+        "type": "localStorage",
+      },
+      "v4": {
+        "removeLegacyPostBuildHeadAttribute": false,
+      },
+    },
     "headTags": [],
     "i18n": {
       "defaultLocale": "en",
@@ -458,6 +712,9 @@ exports[`loadSiteConfig website with valid siteConfig 1`] = `
       "path": "i18n",
     },
     "markdown": {
+      "anchors": {
+        "maintainCase": false,
+      },
       "format": "mdx",
       "mdx1Compat": {
         "admonitions": true,
@@ -465,9 +722,12 @@ exports[`loadSiteConfig website with valid siteConfig 1`] = `
         "headingIds": true,
       },
       "mermaid": false,
+      "parseFrontMatter": [Function],
       "preprocessor": undefined,
+      "remarkRehypeOptions": undefined,
     },
     "noIndex": false,
+    "onBrokenAnchors": "warn",
     "onBrokenLinks": "throw",
     "onBrokenMarkdownLinks": "warn",
     "onDuplicateRoutes": "warn",
